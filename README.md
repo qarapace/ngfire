@@ -48,3 +48,107 @@ npm install @qarapace/ngfire
 ```
 
 ngfire is a companion to the official `firebase` package — it does not bundle or replace it.
+
+## Usage
+
+### Configuration
+
+```typescript
+// app.config.ts
+import { provideNgFire } from '@qarapace/ngfire/app';
+import { withAuth } from '@qarapace/ngfire/auth';
+import { withFirestore } from '@qarapace/ngfire/firestore';
+import { withFunctions } from '@qarapace/ngfire/functions';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // Features are registered in order, guaranteeing factory execution sequence
+    // (e.g. Auth is initialized before Firestore)
+    provideNgFire(
+      { firebase: environment.firebase },
+      withAuth(),
+      withFirestore(),
+      withFunctions({ region: 'europe-west1' })
+    ),
+  ],
+};
+```
+
+### Auth service
+
+```typescript
+import { inject, Injectable } from '@angular/core';
+import { User } from 'firebase/auth';
+import { Observable, first, shareReplay } from 'rxjs';
+import { AUTH, onAuthStateChanged$ } from '@qarapace/ngfire/auth';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private auth = inject(AUTH);
+
+  // Shared stream — late subscribers get the last emitted value immediately
+  readonly user$: Observable<User | null> = onAuthStateChanged$(this.auth).pipe(
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  // Resolves once the auth state is known (useful for guards, resolvers, etc.)
+  readonly onReady$ = this.user$.pipe(first());
+
+  // Bridge to signals via Angular's built-in rxResource
+  readonly user = rxResource({ stream: () => this.user$ });
+}
+```
+
+### Firestore service
+
+```typescript
+import { inject, Injectable } from '@angular/core';
+import { collection, doc, query, where } from 'firebase/firestore';
+import { map } from 'rxjs';
+import { FIRESTORE, onSnapshot$ } from '@qarapace/ngfire/firestore';
+
+// Use the Firebase SDK directly — ngfire only provides essential helpers
+// like onSnapshot$(), without unnecessary abstractions on top
+@Injectable({ providedIn: 'root' })
+export class DataService {
+  private firestore = inject(FIRESTORE);
+
+  getDocument(id: string) {
+    return onSnapshot$(doc(this.firestore, 'items', id)).pipe(
+      map((snap) => snap.data()),
+    );
+  }
+
+  getActiveItems() {
+    const q = query(
+      collection(this.firestore, 'items'),
+      where('active', '==', true),
+    );
+    return onSnapshot$(q).pipe(
+      map((snap) => snap.docs.map((d) => d.data())),
+    );
+  }
+}
+```
+
+### Functions service
+
+```typescript
+import { inject, Injectable } from '@angular/core';
+import { httpsCallable } from 'firebase/functions';
+import { FUNCTIONS } from '@qarapace/ngfire/functions';
+
+@Injectable({ providedIn: 'root' })
+export class FunctionsService {
+  private functions = inject(FUNCTIONS);
+
+  async sendEmail(to: string, subject: string) {
+    const callable = httpsCallable(this.functions, 'sendEmail');
+    return callable({ to, subject });
+  }
+}
+```
+
+### Emulators
+
+ngfire supports Firebase emulators out of the box. See [Emulator Connection](ARCHITECTURE.md#emulator-connection) in the architecture doc for setup options, including a tree-shakable approach that keeps emulator code out of production builds.
