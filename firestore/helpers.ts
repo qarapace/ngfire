@@ -6,7 +6,7 @@ import {
   QuerySnapshot,
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
-import { fromFirebaseListener } from '../../app/src/helpers';
+import { fromFirebaseListener } from '../app/helpers';
 
 /**
  * Observable wrapper around Firestore's `onSnapshot`.

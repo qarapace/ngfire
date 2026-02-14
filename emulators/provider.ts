@@ -8,11 +8,11 @@ import {
   makeEnvironmentProviders,
   provideEnvironmentInitializer,
 } from '@angular/core';
-import { FIREBASE_APPS } from '../../app/src/provider';
-import { NgFireFeatureFn } from '../../app/src/types';
-import { AUTH_INSTANCES } from '../../auth/src/provider';
-import { FIRESTORE_INSTANCES } from '../../firestore/src/provider';
-import { FUNCTIONS_INSTANCES } from '../../functions/src/provider';
+import { FIREBASE_APPS } from '../app/provider';
+import { NgFireFeatureFn } from '../app/types';
+import { AUTH_INSTANCES } from '../auth/provider';
+import { FIRESTORE_INSTANCES } from '../firestore/provider';
+import { FUNCTIONS_INSTANCES } from '../functions/provider';
 
 // ---------------------------------------------------------------------------
 // Configuration

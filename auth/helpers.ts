@@ -5,7 +5,7 @@ import {
   User,
 } from 'firebase/auth';
 import { Observable } from 'rxjs';
-import { fromFirebaseListener } from '../../app/src/helpers';
+import { fromFirebaseListener } from '../app/helpers';
 
 /**
  * Observable wrapper around `onAuthStateChanged`.

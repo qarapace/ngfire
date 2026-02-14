@@ -7,32 +7,32 @@
   "sideEffects": false,
   "exports": {
     "./app": {
-      "types": "./dist/app/src/index.d.ts",
-      "default": "./dist/app/src/index.js"
+      "types": "./dist/app/index.d.ts",
+      "default": "./dist/app/index.js"
     },
     "./analytics": {
-      "types": "./dist/analytics/src/index.d.ts",
-      "default": "./dist/analytics/src/index.js"
+      "types": "./dist/analytics/index.d.ts",
+      "default": "./dist/analytics/index.js"
     },
     "./auth": {
-      "types": "./dist/auth/src/index.d.ts",
-      "default": "./dist/auth/src/index.js"
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
     },
     "./firestore": {
-      "types": "./dist/firestore/src/index.d.ts",
-      "default": "./dist/firestore/src/index.js"
+      "types": "./dist/firestore/index.d.ts",
+      "default": "./dist/firestore/index.js"
     },
     "./functions": {
-      "types": "./dist/functions/src/index.d.ts",
-      "default": "./dist/functions/src/index.js"
+      "types": "./dist/functions/index.d.ts",
+      "default": "./dist/functions/index.js"
     },
     "./emulators": {
-      "types": "./dist/emulators/src/index.d.ts",
-      "default": "./dist/emulators/src/index.js"
+      "types": "./dist/emulators/index.d.ts",
+      "default": "./dist/emulators/index.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.lib.json",
+    "build": "tsc",
     "lint": "eslint ."
   },
   "peerDependencies": {

@@ -1,8 +1,8 @@
 import { getApp, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { InjectionToken } from '@angular/core';
-import { FIREBASE_APPS } from '../../app/src/provider';
-import { NgFireFeatureFn } from '../../app/src/types';
+import { FIREBASE_APPS } from '../app/provider';
+import { NgFireFeatureFn } from '../app/types';
 
 // ---------------------------------------------------------------------------
 // Injection Tokens
