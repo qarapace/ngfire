@@ -1,5 +1,5 @@
+import { EnvironmentProviders, Provider } from '@angular/core';
 import { FirebaseOptions } from 'firebase/app';
-import { Provider, EnvironmentProviders } from '@angular/core';
 
 export interface NgFireConfig {
   firebase: FirebaseOptions;

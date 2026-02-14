@@ -1,0 +1,6 @@
+{
+  "singleQuote": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "trailingComma": "es5",
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]"]
+}

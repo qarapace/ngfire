@@ -1,8 +1,11 @@
-import tseslint from 'typescript-eslint';
+import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import unusedImports from 'eslint-plugin-unused-imports';
+import { defineConfig } from 'eslint/config';
+import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
-  ...tseslint.configs.recommended,
+export default defineConfig(
+  tseslint.configs.recommended,
+  eslintPluginPrettier,
   {
     ignores: ['**/dist'],
   },
@@ -22,6 +25,7 @@ export default tseslint.config(
           argsIgnorePattern: '^_',
         },
       ],
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-expressions': [
         'error',
         {

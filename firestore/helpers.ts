@@ -1,9 +1,9 @@
 import {
   DocumentReference,
   DocumentSnapshot,
-  onSnapshot,
   Query,
   QuerySnapshot,
+  onSnapshot,
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { fromFirebaseListener } from '../app/helpers';

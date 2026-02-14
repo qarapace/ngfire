@@ -1,8 +1,8 @@
 import {
   Auth,
+  User,
   onAuthStateChanged,
   onIdTokenChanged,
-  User,
 } from 'firebase/auth';
 import { Observable } from 'rxjs';
 import { fromFirebaseListener } from '../app/helpers';

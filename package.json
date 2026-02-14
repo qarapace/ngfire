@@ -33,7 +33,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.ts\"",
+    "format:check": "prettier --check \"**/*.ts\"",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "@angular/core": ">=19.0.0",
@@ -42,19 +45,31 @@
   },
   "devDependencies": {
     "@angular/core": "^21.0.6",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-unused-imports": "^4.0.0",
     "firebase": "^12.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "typescript": "~5.8.0",
-    "typescript-eslint": "^8.0.0",
-    "eslint": "^9.0.0",
-    "eslint-plugin-unused-imports": "^4.0.0"
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.0.0"
   },
   "files": [
     "dist",
     "README.md",
     "ARCHITECTURE.md"
   ],
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "keywords": [
     "angular",
     "firebase",

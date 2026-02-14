@@ -1,4 +1,4 @@
-import { defer, Observable } from 'rxjs';
+import { Observable, defer } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 /**

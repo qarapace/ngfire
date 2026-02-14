@@ -1,9 +1,9 @@
-import { initializeApp, getApp, FirebaseApp } from 'firebase/app';
 import {
-  InjectionToken,
   EnvironmentProviders,
+  InjectionToken,
   makeEnvironmentProviders,
 } from '@angular/core';
+import { FirebaseApp, getApp, initializeApp } from 'firebase/app';
 import { NgFireConfig, NgFireFeatureFn } from './types';
 
 // ---------------------------------------------------------------------------
