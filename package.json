@@ -1,5 +1,5 @@
 {
-  "name": "ngfire",
+  "name": "@qarapace/ngfire",
   "version": "0.0.1",
   "description": "Minimal Angular wrapper around the Firebase JS SDK",
   "license": "MIT",

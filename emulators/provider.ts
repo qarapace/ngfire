@@ -98,7 +98,7 @@ export function withEmulators(emulators: EmulatorConfig): NgFireFeatureFn {
  * @example
  * ```typescript
  * // environment.ts (dev only — replaced by environment.prod.ts at build)
- * import { provideFirebaseEmulators } from '@fo/ngfire/emulators';
+ * import { provideFirebaseEmulators } from '@qarapace/ngfire/emulators';
  *
  * export const environment: Environment = {
  *   providers: [

@@ -17,43 +17,30 @@ ngfire
 Consumer imports:
 
 ```typescript
-import { withAnalytics, ANALYTICS } from '@fo/ngfire/analytics';
-import { provideNgFire, fromFirebaseListener } from '@fo/ngfire/app';
-import { withAuth, AUTH, onIdTokenChanged$ } from '@fo/ngfire/auth';
-import { withFirestore, FIRESTORE, onSnapshot$ } from '@fo/ngfire/firestore';
-import { withFunctions, FUNCTIONS } from '@fo/ngfire/functions';
+import { withAnalytics, ANALYTICS } from '@qarapace/ngfire/analytics';
+import { provideNgFire, fromFirebaseListener } from '@qarapace/ngfire/app';
+import { withAuth, AUTH, onIdTokenChanged$ } from '@qarapace/ngfire/auth';
+import { withFirestore, FIRESTORE, onSnapshot$ } from '@qarapace/ngfire/firestore';
+import { withFunctions, FUNCTIONS } from '@qarapace/ngfire/functions';
 ```
 
 ## Tree-Shaking Strategy
 
 ### 1. Secondary entry points (structural isolation)
 
-Each Firebase product is a separate entry point with its own `index.ts`. If an app only imports `@fo/ngfire/firestore`, the code for auth and functions is **never included in the bundle**.
+Each Firebase product is a separate entry point with its own `index.ts`. If an app only imports `@qarapace/ngfire/firestore`, the code for auth and functions is **never included in the bundle**.
 
-In the Nx monorepo, this maps to path aliases in `tsconfig.base.json`:
-
-```json
-{
-  "@fo/ngfire/analytics": ["frontend/libs/ngfire/analytics/src/index.ts"],
-  "@fo/ngfire/app": ["frontend/libs/ngfire/app/src/index.ts"],
-  "@fo/ngfire/firestore": ["frontend/libs/ngfire/firestore/src/index.ts"],
-  "@fo/ngfire/auth": ["frontend/libs/ngfire/auth/src/index.ts"],
-  "@fo/ngfire/functions": ["frontend/libs/ngfire/functions/src/index.ts"],
-  "@fo/ngfire/emulators": ["frontend/libs/ngfire/emulators/src/index.ts"]
-}
-```
-
-When published as an npm package, these become `exports` in `package.json`:
+These map to `exports` in `package.json`:
 
 ```json
 {
   "exports": {
-    "./analytics": "./analytics/src/index.js",
-    "./app": "./app/src/index.js",
-    "./firestore": "./firestore/src/index.js",
-    "./auth": "./auth/src/index.js",
-    "./functions": "./functions/src/index.js",
-    "./emulators": "./emulators/src/index.js"
+    "./analytics": "./dist/analytics/index.js",
+    "./app": "./dist/app/index.js",
+    "./firestore": "./dist/firestore/index.js",
+    "./auth": "./dist/auth/index.js",
+    "./functions": "./dist/functions/index.js",
+    "./emulators": "./dist/emulators/index.js"
   }
 }
 ```
@@ -85,35 +72,28 @@ There is no root `index.ts` re-exporting everything. Each entry point is self-co
 Each entry point follows a consistent internal structure:
 
 ```
-frontend/libs/ngfire/
 ├── app/
-│   └── src/
-│       ├── index.ts        ← public API
-│       ├── provider.ts     ← provideNgFire(), tokens
-│       ├── helpers.ts      ← fromFirebaseListener(), fromFirebasePromise()
-│       └── types.ts        ← NgFireConfig, NgFireFeatureFn
+│   ├── index.ts        ← public API
+│   ├── provider.ts     ← provideNgFire(), tokens
+│   ├── helpers.ts      ← fromFirebaseListener(), fromFirebasePromise()
+│   └── types.ts        ← NgFireConfig, NgFireFeatureFn
 ├── analytics/
-│   └── src/
-│       ├── index.ts
-│       └── provider.ts     ← withAnalytics(), ANALYTICS
+│   ├── index.ts
+│   └── provider.ts     ← withAnalytics(), ANALYTICS
 ├── firestore/
-│   └── src/
-│       ├── index.ts
-│       ├── provider.ts     ← withFirestore(), FIRESTORE
-│       └── helpers.ts      ← onSnapshot$()
+│   ├── index.ts
+│   ├── provider.ts     ← withFirestore(), FIRESTORE
+│   └── helpers.ts      ← onSnapshot$()
 ├── auth/
-│   └── src/
-│       ├── index.ts
-│       ├── provider.ts     ← withAuth(), AUTH
-│       └── helpers.ts      ← onAuthStateChanged$(), onIdTokenChanged$()
+│   ├── index.ts
+│   ├── provider.ts     ← withAuth(), AUTH
+│   └── helpers.ts      ← onAuthStateChanged$(), onIdTokenChanged$()
 ├── functions/
-│   └── src/
-│       ├── index.ts
-│       └── provider.ts     ← withFunctions(), FUNCTIONS
+│   ├── index.ts
+│   └── provider.ts     ← withFunctions(), FUNCTIONS
 ├── emulators/
-│   └── src/
-│       ├── index.ts
-│       └── provider.ts     ← withEmulators(), EmulatorConfig
+│   ├── index.ts
+│   └── provider.ts     ← withEmulators(), EmulatorConfig
 ├── package.json
 ├── README.md
 └── ARCHITECTURE.md
@@ -145,7 +125,7 @@ Place emulator connection in the environment file using the `provideFirebaseEmul
 
 ```typescript
 // environment.ts (dev)
-import { provideFirebaseEmulators } from '@fo/ngfire/emulators';
+import { provideFirebaseEmulators } from '@qarapace/ngfire/emulators';
 
 export const environment: Environment = {
   // ...
@@ -175,7 +155,7 @@ This pattern extends beyond emulators — any dev-only provider (ngrx devtools, 
 
 ### Alternative: `withEmulators()` (convenience)
 
-The `@fo/ngfire/emulators` entry point provides a declarative API for quick setup. Note that it imports all Firebase product SDKs (`firebase/auth`, `firebase/firestore`, `firebase/functions`), so it is **not tree-shakable** — use only in dev or when bundle size is not a concern:
+The `@qarapace/ngfire/emulators` entry point provides a declarative API for quick setup. Note that it imports all Firebase product SDKs (`firebase/auth`, `firebase/firestore`, `firebase/functions`), so it is **not tree-shakable** — use only in dev or when bundle size is not a concern:
 
 ```typescript
 provideNgFire(
