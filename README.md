@@ -79,17 +79,15 @@ export const appConfig: ApplicationConfig = {
 ```typescript
 import { inject, Injectable } from '@angular/core';
 import { User } from 'firebase/auth';
-import { Observable, first, shareReplay } from 'rxjs';
+import { Observable, first } from 'rxjs';
 import { AUTH, onAuthStateChanged$ } from '@qarapace/ngfire/auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private auth = inject(AUTH);
 
-  // Shared stream — late subscribers get the last emitted value immediately
-  readonly user$: Observable<User | null> = onAuthStateChanged$(this.auth).pipe(
-    shareReplay({ bufferSize: 1, refCount: true }),
-  );
+  // Already shared (shareReplay) — all ngfire observables are
+  readonly user$: Observable<User | null> = onAuthStateChanged$(this.auth);
 
   // Resolves once the auth state is known (useful for guards, resolvers, etc.)
   readonly onReady$ = this.user$.pipe(first());
