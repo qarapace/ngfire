@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true,
+    "types": []
+  },
+  "include": [
+    "app/src/**/*.ts",
+    "analytics/src/**/*.ts",
+    "auth/src/**/*.ts",
+    "firestore/src/**/*.ts",
+    "functions/src/**/*.ts",
+    "emulators/src/**/*.ts"
+  ]
+}
