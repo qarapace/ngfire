@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "description": "Minimal Angular wrapper around the Firebase JS SDK",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qarapace/ngfire"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -36,6 +43,7 @@
     "lint": "eslint .",
     "format": "prettier --write \"**/*.ts\"",
     "format:check": "prettier --check \"**/*.ts\"",
+    "prepublishOnly": "npm run build",
     "prepare": "husky"
   },
   "peerDependencies": {
