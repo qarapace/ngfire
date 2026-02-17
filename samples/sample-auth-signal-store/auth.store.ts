@@ -15,8 +15,8 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { catchError, exhaustMap, from, of, pipe, tap } from 'rxjs';
-import { withNgAuth } from './with-auth-data.feature';
+import { exhaustMap, from, pipe, tap } from 'rxjs';
+import { AsyncHandler, withNgAuth } from './with-auth-data.feature';
 
 export interface MyClaims {
   admin?: boolean;
@@ -65,49 +65,37 @@ export const AuthStore = signalStore(
       },
 
       /** Signs in with email and password. */
-      signIn: rxMethod<{ email: string; password: string }>(
+      signIn: rxMethod<{ email: string; password: string } & AsyncHandler>(
         pipe(
-          exhaustMap(({ email, password }) =>
+          exhaustMap(({ email, password, ...handler }) =>
             from(signInWithEmailAndPassword(store.auth, email, password)).pipe(
-              tap(() => store.authResource.reload()),
-              catchError((err) => {
-                console.error('Sign-in failed:', err);
-                return of(null);
-              })
+              store._handleAuth(handler)
             )
           )
         )
       ),
 
       /** Signs in with a Google popup. */
-      signInWithGoogle: rxMethod<void>(
+      signInWithGoogle: rxMethod<AsyncHandler>(
         pipe(
-          exhaustMap(() =>
+          exhaustMap((handler) =>
             from(signInWithPopup(store.auth, new GoogleAuthProvider())).pipe(
-              tap(() => store.authResource.reload()),
-              catchError((err) => {
-                console.error('Google sign-in failed:', err);
-                return of(null);
-              })
+              store._handleAuth(handler)
             )
           )
         )
       ),
 
-      /** Creates a new account with email and password. */
-      createAccount: rxMethod<{ email: string; password: string }>(
+      /** Creates a new account with email and password, then redirects to account settings. */
+      createAccount: rxMethod<
+        { email: string; password: string } & AsyncHandler
+      >(
         pipe(
           tap(() => patchState(store, { afterLoginUrl: '/settings/account' })),
-          exhaustMap(({ email, password }) =>
+          exhaustMap(({ email, password, ...handler }) =>
             from(
               createUserWithEmailAndPassword(store.auth, email, password)
-            ).pipe(
-              tap(() => store.authResource.reload()),
-              catchError((err) => {
-                console.error('Account creation failed:', err);
-                return of(null);
-              })
-            )
+            ).pipe(store._handleAuth(handler))
           )
         )
       ),
@@ -117,7 +105,9 @@ export const AuthStore = signalStore(
         pipe(
           exhaustMap(() =>
             from(signOut(store.auth)).pipe(
-              tap(() => router.navigate(['/auth/sign-in']))
+              store._handleAuth({
+                next: () => router.navigate(['/auth/sign-in']),
+              })
             )
           )
         )

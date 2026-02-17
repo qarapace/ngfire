@@ -10,15 +10,24 @@ The store is split into two layers:
 
 A generic signal store feature that can be dropped into any Angular project. It wires `onIdTokenChanged$` (cold observable) into an `rxResource` and exposes:
 
-| Signal            | Type             | Description                                       |
-| ----------------- | ---------------- | ------------------------------------------------- |
-| `auth`            | `Auth`           | The Firebase Auth instance                        |
-| `authResource`    | `ResourceRef`    | The underlying reactive resource                  |
-| `user`            | `User \| null`   | Current Firebase user                             |
-| `claims`          | `Claims \| null` | Custom claims from the ID token (type-safe)       |
-| `isAuthenticated` | `boolean`        | Whether a user is signed in                       |
-| `isLoading`       | `boolean`        | Whether auth is resolving (initial load, refresh) |
-| `uid`             | `string \| null` | Current user's UID                                |
+| Signal            | Type             | Description                                            |
+| ----------------- | ---------------- | ------------------------------------------------------ |
+| `auth`            | `Auth`           | The Firebase Auth instance                             |
+| `authResource`    | `ResourceRef`    | The underlying reactive resource                       |
+| `user`            | `User \| null`   | Current Firebase user                                  |
+| `claims`          | `Claims \| null` | Custom claims from the ID token (type-safe)            |
+| `isAuthenticated` | `boolean`        | Whether a user is signed in                            |
+| `isLoading`       | `boolean`        | Whether auth is resolving (initial load, refresh)      |
+| `uid`             | `string \| null` | Current user's UID                                     |
+| `isReady`         | `boolean`        | Whether auth has settled (resolved, errored, or local) |
+
+It also provides helper methods:
+
+| Method          | Description                                                         |
+| --------------- | ------------------------------------------------------------------- |
+| `onReady()`     | Observable that emits once when auth is ready, then completes       |
+| `expectUid()`   | Returns the current UID or throws if not authenticated              |
+| `_handleAuth()` | Internal RxJS operator for auth actions (reload + error forwarding) |
 
 The `Claims` type parameter lets you type your custom claims:
 
@@ -39,6 +48,14 @@ Composes `withNgAuth` with application-specific auth methods:
 - `createAccount`: email/password registration
 - `signOut`: sign out and redirect
 - `redirectToLogin`: save target URL and redirect to sign-in (for route guards)
+
+### 3. Route guard: `authGuard` ([auth.guard.ts](./auth.guard.ts))
+
+Demonstrates how `onReady()` and `redirectToLogin()` work together in a `CanActivateFn`:
+
+1. Waits for auth to settle via `onReady()` (avoids redirecting while still loading)
+2. Checks `isAuthenticated()`
+3. If not authenticated, saves the target URL and redirects to sign-in
 
 ## Why `onIdTokenChanged$` is cold
 
