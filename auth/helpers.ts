@@ -1,11 +1,11 @@
 import {
   Auth,
-  User,
   onAuthStateChanged,
   onIdTokenChanged,
+  User,
 } from 'firebase/auth';
 import { Observable } from 'rxjs';
-import { fromFirebaseListener } from '../app/helpers';
+import { fromFirebaseListener } from '../app';
 
 /**
  * Observable wrapper around `onAuthStateChanged`.
@@ -13,7 +13,10 @@ import { fromFirebaseListener } from '../app/helpers';
  * Emits when the user signs in or signs out.
  * Does **not** fire on token refresh — use `onIdTokenChanged$` for that.
  *
- * **Opinionated**: the returned observable is shared (see `fromFirebaseListener`).
+ * **Opinionated**: the returned observable is **cold** — each subscriber gets
+ * its own Firebase listener. This lets consumers (e.g. `rxResource`) properly
+ * reflect the indeterminate state during auth flows (loading → resolved).
+ * Use `shareReplay` if you need multicasting.
  *
  * @example
  * ```typescript
@@ -33,7 +36,10 @@ export function onAuthStateChanged$(auth: Auth): Observable<User | null> {
  *
  * Emits when the user signs in, signs out, **or** when the ID token is refreshed.
  *
- * **Opinionated**: the returned observable is shared (see `fromFirebaseListener`).
+ * **Opinionated**: the returned observable is **cold** — each subscriber gets
+ * its own Firebase listener. This lets consumers (e.g. `rxResource`) properly
+ * reflect the indeterminate state during auth flows (loading → resolved).
+ * Use `shareReplay` if you need multicasting.
  *
  * @example
  * ```typescript

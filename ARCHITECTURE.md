@@ -75,7 +75,7 @@ Each entry point follows a consistent internal structure:
 ├── app/
 │   ├── index.ts        ← public API
 │   ├── provider.ts     ← provideNgFire(), tokens
-│   ├── helpers.ts      ← fromFirebaseListener(), fromFirebasePromise()
+│   ├── helpers.ts      ← fromFirebaseListener(), sharedFirebaseListener()
 │   └── types.ts        ← NgFireConfig, NgFireFeatureFn
 ├── analytics/
 │   ├── index.ts

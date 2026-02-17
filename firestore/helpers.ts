@@ -1,12 +1,12 @@
 import {
   DocumentReference,
   DocumentSnapshot,
+  onSnapshot,
   Query,
   QuerySnapshot,
-  onSnapshot,
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
-import { fromFirebaseListener } from '../app/helpers';
+import { sharedFirebaseListener } from '../app';
 
 /**
  * Observable wrapper around Firestore's `onSnapshot`.
@@ -14,7 +14,8 @@ import { fromFirebaseListener } from '../app/helpers';
  * Works with both `DocumentReference` and `Query` (including `CollectionReference`),
  * mirroring the SDK's `onSnapshot` overloads.
  *
- * **Opinionated**: the returned observable is shared (see `fromFirebaseListener`).
+ * **Opinionated**: the returned observable is shared (see `sharedFirebaseListener`).
+ * All subscribers share a single Firestore listener; late subscribers get the last snapshot.
  *
  * @example
  * ```typescript
@@ -39,7 +40,7 @@ export function onSnapshot$<AppType, DbType extends object>(
 ): Observable<
   DocumentSnapshot<AppType, DbType> | QuerySnapshot<AppType, DbType>
 > {
-  return fromFirebaseListener((next, error) =>
+  return sharedFirebaseListener((next, error) =>
     onSnapshot(ref as any, next as any, error)
   );
 }
