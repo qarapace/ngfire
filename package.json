@@ -1,6 +1,6 @@
 {
   "name": "@qarapace/ngfire",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Minimal Angular wrapper around the Firebase JS SDK",
   "license": "MIT",
   "repository": {
