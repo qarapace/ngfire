@@ -86,7 +86,7 @@ import { AUTH, onAuthStateChanged$ } from '@qarapace/ngfire/auth';
 export class AuthService {
   private auth = inject(AUTH);
 
-  // Already shared (shareReplay) — all ngfire observables are
+  // Cold observable — each subscriber gets its own Firebase listener
   readonly user$: Observable<User | null> = onAuthStateChanged$(this.auth);
 
   // Resolves once the auth state is known (useful for guards, resolvers, etc.)
@@ -150,3 +150,7 @@ export class FunctionsService {
 ### Emulators
 
 ngfire supports Firebase emulators out of the box. See [Emulator Connection](ARCHITECTURE.md#emulator-connection) in the architecture doc for setup options, including a tree-shakable approach that keeps emulator code out of production builds.
+
+## Samples
+
+The [samples/](samples/) folder contains standalone usage examples, including integration with ngrx signal stores and `rxResource`.
