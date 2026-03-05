@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { effect, inject, untracked } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   patchState,
@@ -121,11 +121,17 @@ export const AuthStore = signalStore(
     return {
       onInit() {
         // Navigate after login when auth resolves
-        if (store.isAuthenticated() && store.afterLoginUrl()) {
-          const url = store.afterLoginUrl()!;
-          patchState(store, { afterLoginUrl: null });
-          router.navigateByUrl(url);
-        }
+        effect(() => {
+          if (store.isAuthenticated()) {
+            untracked(() => {
+              const url = store.afterLoginUrl();
+              if (url) {
+                patchState(store, { afterLoginUrl: null });
+                router.navigateByUrl(url);
+              }
+            });
+          }
+        });
       },
     };
   })
