@@ -6,3 +6,4 @@ Usage examples for `@qarapace/ngfire`.
 | ----------------------------------------------------------------- | ------------------------------------------------------------ |
 | [sample-auth-signal-store](./sample-auth-signal-store/)           | Auth state in an ngrx signal store with `rxResource`         |
 | [sample-firestore-signal-store](./sample-firestore-signal-store/) | Real-time Firestore document watching with ngrx signal store |
+| [sample-analytics](./sample-analytics/)                           | Custom event tracking with Firebase Analytics                |
