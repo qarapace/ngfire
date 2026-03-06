@@ -1,1 +1,6 @@
-export { withAnalytics, ANALYTICS, ANALYTICS_INSTANCES } from './provider';
+export {
+  withAnalytics,
+  ANALYTICS,
+  ANALYTICS_INSTANCES,
+  ANALYTICS_SUPPORTED,
+} from './provider';

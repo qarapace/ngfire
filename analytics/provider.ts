@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { Analytics, getAnalytics } from 'firebase/analytics';
+import { Analytics, getAnalytics, isSupported } from 'firebase/analytics';
 import { FirebaseApp, getApp } from 'firebase/app';
 import { FIREBASE_APPS } from '../app/provider';
 import { NgFireFeatureFn } from '../app/types';
@@ -19,6 +19,16 @@ export const ANALYTICS_INSTANCES = new InjectionToken<Analytics[]>(
  * The default Analytics instance.
  */
 export const ANALYTICS = new InjectionToken<Analytics>('NgFire.Analytics');
+
+/**
+ * A promise that resolves to the Analytics instance if supported, or `null` otherwise.
+ *
+ * Use this when you want to defer analytics initialization until `isSupported()` resolves,
+ * without blocking app startup.
+ */
+export const ANALYTICS_SUPPORTED = new InjectionToken<
+  Promise<Analytics | null>
+>('NgFire.AnalyticsSupported');
 
 // ---------------------------------------------------------------------------
 // Factories
@@ -57,6 +67,14 @@ export function withAnalytics(): NgFireFeatureFn {
       provide: ANALYTICS,
       deps: [ANALYTICS_INSTANCES],
       useFactory: defaultAnalyticsFactory,
+    },
+    {
+      provide: ANALYTICS_SUPPORTED,
+      deps: [FIREBASE_APPS],
+      useFactory: (_apps: FirebaseApp[]) =>
+        isSupported().then((supported) =>
+          supported ? getAnalytics(getApp(appName)) : null
+        ),
     },
   ];
 }

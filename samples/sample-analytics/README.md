@@ -2,25 +2,36 @@
 
 Custom event tracking using `@qarapace/ngfire/analytics` with Firebase Analytics.
 
-## Architecture
+Two variants are provided:
 
-The service wraps Firebase Analytics behind a thin Angular service that injects the `ANALYTICS` token provided by `withAnalytics()`.
+- **`analytics.service.ts`** -- uses the synchronous `ANALYTICS` token with optional injection.
+- **`analytics-supported.service.ts`** -- uses the `ANALYTICS_SUPPORTED` token, a `Promise<Analytics | null>` that checks `isSupported()` without blocking app startup.
 
-### Key concepts
-
-1. **`ANALYTICS` injection token** -- provided by calling `withAnalytics()` in your app's `provideNgFire()` setup. The token resolves to the Firebase `Analytics` instance.
-
-2. **Optional injection** -- `inject(ANALYTICS, { optional: true })` lets the service degrade gracefully when analytics is not configured (e.g. in unit tests or SSR).
-
-3. **`logEvent`** -- the standard Firebase Analytics function used to record custom events. Each method maps to a domain-specific event (`game_start`, `guess`, `win`).
-
-### Setup
+## Setup
 
 ```typescript
 provideNgFire(firebaseConfig, withAnalytics())
 ```
 
-### Events
+## Variant 1: `ANALYTICS` (synchronous)
+
+Injects the `ANALYTICS` token as `optional`. The service silently no-ops when analytics is not configured (e.g. in unit tests or SSR).
+
+```typescript
+private analytics = inject(ANALYTICS, { optional: true });
+```
+
+## Variant 2: `ANALYTICS_SUPPORTED` (async)
+
+Injects a `Promise<Analytics | null>` that resolves once Firebase's `isSupported()` completes. This is the recommended approach when you want to respect browser support without blocking app startup.
+
+```typescript
+private analyticsPromise = inject(ANALYTICS_SUPPORTED);
+```
+
+The private `log` method awaits the promise, so public methods remain fire-and-forget.
+
+## Events
 
 | Method           | Event name   | Parameters                              |
 | ---------------- | ------------ | --------------------------------------- |
